@@ -82,4 +82,6 @@ class Handler extends ExceptionHandler
             'message' => $message,
         ], $status);
     }
+    
+
 }

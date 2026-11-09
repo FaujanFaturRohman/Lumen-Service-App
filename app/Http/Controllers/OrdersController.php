@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrdersController extends Controller
 {
@@ -15,7 +16,7 @@ class OrdersController extends Controller
             return response('Not Acceptable!', 406);
         }
 
-        return $this->paginated(Order::query(), 'Daftar pesanan', $format);
+        return $this->paginated(Order::where('user_id', Auth::user()->id), 'Daftar pesanan', $format);
     }
 
     // GET /orders/{id}
@@ -53,7 +54,9 @@ class OrdersController extends Controller
             return $error;
         }
 
-        $order = Order::create($request->only((new Order)->getFillable()));
+        $order = Order::create(
+            ['user_id' => Auth::user()->id] + $request->only((new Order)->getFillable())
+        );
 
         return $this->respond([
             'message' => 'Pesanan berhasil dibuat',
